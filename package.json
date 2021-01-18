@@ -1,0 +1,27 @@
+{
+  "name": "ownfoscam01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serjmac/ownfoscam01.git"
+  },
+  "keywords": [
+    "foscam"
+  ],
+  "author": "Sergio Macias",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/serjmac/ownfoscam01/issues"
+  },
+  "homepage": "https://github.com/serjmac/ownfoscam01#readme",
+  "dependencies": {
+    "ejs-mate": "^3.0.0",
+    "express": "^4.17.1",
+    "path": "^0.12.7"
+  }
+}
