@@ -1,5 +1,30 @@
-<h1>HELLO WORLD!</h1>
-<h3>this is the home page</h3>
-<h6>edited from nano</h6>
-<h6>edited from vs code</h6>
-<p>another edit from vs code</p>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foscam control</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Foscam Control in Js</h1>
+      <div class="buttons">
+        <form action="/enable">
+          <button id="enableBtn" class="onButton">Enable</button>
+        </form>
+        <form action="/disable">
+          <button id="disableBtn" class="offButton">Disable</button>
+        </form>
+      </div>
+    </div>
+    <%= newImg.alarmStatus %> <% if (newImg.alarmStatus === "0") {%>
+    <h3>La alarma está DESACTIVADA</h3>
+    <% }%> <% if (newImg.alarmStatus === "1") {%>
+    <h3>La alarma está ACTIVADA</h3>
+    <% }%> <% if(newImg.status===true){ %>
+    <div>Mostrando imagen:</div>
+
+    <img src="snapshot.jpg" style="width: 100%; margin: auto" alt="img could not be loaded" /> <% } %>
+  </body>
+</html>
