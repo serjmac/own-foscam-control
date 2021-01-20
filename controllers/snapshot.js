@@ -7,7 +7,11 @@ const Fs = require("fs");
 const path = require("path");
 const axios = require("axios");
 const convert = require("xml-js");
-
+//you need to create a file called ".env" in this app root folder and set valid credentials to access your Foscam Camera
+//.env content keys needed:
+//SNAP_US=yourFoscamRemoteUser
+//SNAP_PWD=yourFoscamRemotePassword
+//SNAP_IP=yourFoscamIP
 const username = process.env.SNAP_USR;
 const password = process.env.SNAP_PWD;
 const IP = process.env.SNAP_IP;

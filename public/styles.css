@@ -37,6 +37,8 @@ form {
   text-shadow: 0px 1px 0px #86ae47;
   width: 45vw;
   height: 45vw;
+  max-width: 375px;
+  max-height: 375px;
 }
 .onButton:hover {
   background: linear-gradient(to bottom, #a5cc52 5%, #b8e356 100%);
@@ -64,6 +66,8 @@ form {
   text-shadow: 0px 1px 0px #810e05;
   width: 45vw;
   height: 45vw;
+  max-width: 375px;
+  max-height: 375px;
 }
 .offButton:hover {
   background: linear-gradient(to bottom, #c62d1f 5%, #f24537 100%);
