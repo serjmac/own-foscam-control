@@ -1,16 +1,53 @@
-body {
+/* body {
   background: rgb(117, 99, 179);
   background: linear-gradient(45deg, rgba(117, 99, 179, 1) 0%, rgba(16, 16, 17, 1) 100%);
+} */
+/* body {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+} */
+body {
+  background: linear-gradient(-45deg, #5c5ee0, #1d1e47, #7b3ca0, #361947);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 h1 {
-  display: inline;
-  color: cornflowerblue;
+  color: rgb(218, 218, 218);
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  max-width: 90vw;
+}
+
+h2 {
+  color: #f8f8ff;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 20px;
+  margin: 6px auto;
+  line-height: 30px;
+  text-align: center;
 }
 
 .container {
   text-align: center;
-  margin: 0 auto;
+  margin: auto;
   border: solid 2px;
   padding-bottom: 6px;
 }

@@ -17,13 +17,15 @@
           <button id="disableBtn" class="offButton">Disable</button>
         </form>
       </div>
+
+      <%= userIP %> <%= userAgent %> <%= `STATUS: ${newImg.alarmStatus}` %> <%= `server Up Time: ${newImg.serverUpTime}` %> <% if (newImg.alarmStatus
+      === "0") {%>
+      <h2>La alarma está DESACTIVADA</h2>
+      <% }%> <% if (newImg.alarmStatus === "1") {%>
+      <h2>La alarma está ACTIVADA</h2>
+      <% }%> <% if(newImg.showImage===true){ %>
+      <div>Mostrando imagen:</div>
+      <img src="snapshot.jpg" style="width: 100%; margin: auto" alt="img could not be loaded" /> <% } %>
     </div>
-    <%= userIP %> <%= userAgent %> <%= `STATUS: ${newImg.alarmStatus}` %> <% if (newImg.alarmStatus === "0") {%>
-    <h3>La alarma está DESACTIVADA</h3>
-    <% }%> <% if (newImg.alarmStatus === "1") {%>
-    <h3>La alarma está ACTIVADA</h3>
-    <% }%> <% if(newImg.status===true){ %>
-    <div>Mostrando imagen:</div>
-    <img src="snapshot.jpg" style="width: 100%; margin: auto" alt="img could not be loaded" /> <% } %>
   </body>
 </html>

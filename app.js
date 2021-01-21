@@ -6,6 +6,14 @@ if (process.env.NODE_ENV !== "production") {
   //SNAP_PWD=yourFoscamRemotePassword
   //SNAP_IP=yourFoscamIP
 }
+//etc/rc.local launch script:
+//su - yourUser -c "NODE_ENV=development /usr/local/bin/forever start -w --watchDirectory=/home/yourUser/ownfoscam01 --watchIgnore --sourceDir /home/yourUser/ownfoscam01 --workingDir /home/yourUser/ownfoscam01 app.js"
+//you need to place a .foreverignore file in the app folder with valid ignore pattern, example:
+// node_modules
+// public
+// *ignore*
+// **.log**
+// **.ejs**
 
 const express = require("express");
 const ejsMate = require("ejs-mate");
@@ -33,14 +41,26 @@ app.use((req, res, next) => {
   next();
 });
 
+function formatTime(seconds) {
+  function pad(s) {
+    return (s < 10 ? "0" : "") + s;
+  }
+  var hours = Math.floor(seconds / (60 * 60));
+  var minutes = Math.floor((seconds % (60 * 60)) / 60);
+  var seconds = Math.floor(seconds % 60);
+
+  return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+}
+
 app.get(
   "/enable",
   catchAsync(async (req, res) => {
     await snapshot.downloadImage();
-    newImg.status = true;
+    newImg.showImage = true;
     await snapshot.activateAlarm();
-    const status = await snapshot.getStatus();
-    newImg.alarmStatus = status;
+    newImg.alarmStatus = await snapshot.getStatus();
+    const uptime = process.uptime();
+    newImg.serverUpTime = formatTime(uptime);
     res.render("home", { newImg });
   })
 );
@@ -48,10 +68,11 @@ app.get(
 app.get(
   "/disable",
   catchAsync(async (req, res) => {
-    newImg.status = false;
+    newImg.showImage = false;
     await snapshot.disableAlarm();
-    const status = await snapshot.getStatus();
-    newImg.alarmStatus = status;
+    newImg.alarmStatus = await snapshot.getStatus();
+    const uptime = process.uptime();
+    newImg.serverUpTime = formatTime(uptime);
     res.render("home", { newImg });
   })
 );
@@ -59,9 +80,11 @@ app.get(
 app.get(
   "/",
   catchAsync(async (req, res) => {
-    //newImg.status = false;
-    const status = await snapshot.getStatus();
-    newImg.alarmStatus = status;
+    await snapshot.downloadImage(); //enable or disable snapshot on root route
+    newImg.showImage = true; //enable or disable snapshot on root route
+    newImg.alarmStatus = await snapshot.getStatus();
+    const uptime = process.uptime();
+    newImg.serverUpTime = formatTime(uptime);
     res.render("home", { newImg });
   })
 );
