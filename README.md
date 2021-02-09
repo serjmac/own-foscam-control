@@ -10,7 +10,7 @@ A simple app to ease daily and common usage of your Foscam camera, with extra fe
 
 ## Why?
 
-With provided Foscam mobile app, operation is slow and sometimes a pain when operating with bad wifi signal. There's lag in operation, image or settings refreshing. Access to snapshots and recordings are done manually searching for content in upload FTP folder. No loging.
+With the vendor provided Foscam mobile app, operation is slow and sometimes a pain when operating with bad wifi signal. There's lag in operation, image or settings refreshing. Access to snapshots and recordings are done manually searching for content in upload FTP folder. No loging.
 
 ## With Own Foscam Control app:
 
@@ -19,10 +19,10 @@ With this app, most common use is available in a frontend. Coded in Javascript a
 ## Additional features available:
 
 - Database (in a MongoDB local or cloud host) loging
-- Auto generated carousel with snapshots and recordings from FTP
+- Auto generated carousel with snapshots and recordings from FTP monitorized folder.
 - Pan Tilt presets direct access for quick goTo reposition
 
-## Instalation
+## Installation
 
 npm install
 
@@ -50,19 +50,19 @@ This parameter points mongoose module to the URL MongoDB. Tests have been made b
 
 ### SNAPSHOT_LIFE_CHECK=30
 
-This parameter is the number of days from which FTP snapshots and recordings are discarded, so that their paths will not be stored in the database. Note that files are not deleted from FTP folder, their just ignored because they're considered too aged.
+This parameter is the number of days from which FTP snapshots and recordings are discarded, so that their paths will not be stored in the database. Note that files are not deleted from FTP folder, they are just ignored because they are considered too aged.
 
 ## Operating
 
-Once parameters are started, choose the way to start the app:
+Once parameters are setup, choose the way to start the app:
 
 - node app.js
 
 - nodemon app.js
 
-- forever start app.js
+- forever start app.js (this option is preferred, so that the option to reflush database and restart app will be working from Carousel section with just a button click)
 
-The app will be available on //localhost:3000
+The app will be available on //localhost:3000 by default.
 
 ![home](./docs/home.jpg)
 
@@ -95,6 +95,17 @@ Devepment testing on windows and ubuntu systems, targeting a Foscam 9821 unit.
 ## Release history
 
 - 0.1 First release
+
+## Troubleshouting
+
+If snapshots are not visible in carousel or recording links are broken, resync Database and check that ftp folder is available and accessible.
+
+App expects this structure to work with:
+
+- videos at: /ftp/record/alarm_YYYYMMDD_hhmmss.mkv
+- images at: /ftp/snap/MDAlarm_YYYYMMDD_hhmmss.jpg
+
+Currently the app parses every filename to extract timestamp from YYYYMMDD_hhmmss string. If your camera does not generate this kind of structure, open an issue showing your file structure and I might add alternative such as fs.stat() to take timestamp from attributes and simplify the process.
 
 ## License
 
