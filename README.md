@@ -80,6 +80,10 @@ Carousel, pan/tilt and logs sections are intuitive:
 
 - Logs generates a table of registries where date/time, IP and userAgent are stored. This is useful if in your family there's more than one that will enable/disable motion detection and you may want to audit who switched off/on the feature at some moment.
 
+## Shortcuts to Enable / Disable Motion detection
+
+As the app accept **/enable** and **/disable** routes in the GET request, it may be intersting to create bookmarks to those URLs to act like app widgets.
+
 ## Notes
 
 For Carousel content being avaiable, it is necessary to setup the Foscam FTP and Motion Detection parameters, so that it will upload these files to the /ftp/ app folder. Refer to camera manual.
