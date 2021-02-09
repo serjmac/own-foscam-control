@@ -1,0 +1,17 @@
+<% layout('layouts/boilerplate')%>
+<div class="col-lg-8 text-center mx-auto">
+  <h4 class="d-inline">Preset list</h4>
+  <form id="gotoForm" action="">
+    <div class="row col-6 mx-auto">
+      <% Object.values(PTZPresets).forEach(function(e) { %>
+      <button type="submit" formaction="/gotopreset/<%=e%>" class="btn btn-light btn-lg mt-2 align-content-center">
+        <strong><%= e %></strong>
+      </button>
+      <% }) %>
+    </div>
+  </form>
+</div>
+<script>
+  const home = document.getElementById("ptz");
+  home.classList.toggle("active");
+</script>

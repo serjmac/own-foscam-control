@@ -1,0 +1,32 @@
+<% layout('layouts/boilerplate')%>
+
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-6 offset-3">
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Please wait</h4>
+        <p>FTP database has been flushed and App is restarting, you will be redirected to Home in <span id="secs">15</span> seconds...</p>
+        <form action="/"><button class="btn btn-light">Go to Home Now</button></form>
+        <script>
+          const countdown = (text, delay) => {
+            return new Promise((resolve, reject) => {
+              setTimeout(() => {
+                document.getElementById("secs").innerHTML = text;
+                resolve();
+              }, delay);
+            });
+          };
+          async function callCount() {
+            for (let i = 14; i > -1; i--) {
+              await countdown(i, 1000);
+              await console.log(i);
+            }
+            console.log("fin");
+            window.location = "/";
+          }
+          callCount();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>

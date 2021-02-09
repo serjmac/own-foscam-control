@@ -1,0 +1,76 @@
+<% layout('layouts/boilerplate')%>   
+      <div class="col-lg-8 text-center mx-auto">
+        <div class="row d-flex align-items-center">    
+          <div class="col d-flex justify-content-between align-items-end">
+            <h4 class="d-inline">Activation Logs</h4><h6 class="d-inline small"><%= `Server Up Time: ${logs.serverUpTime} ` %></h6>
+          </div>
+        </div>
+        <form class="d-flex form-inline searchDateForm border p-1 align-items-center justify-content-center rounded" action="/searchByDate" method="POST">         
+          <label class="lh-1 small p-1" id="customDate">Search by day:</label>
+          <input class="dateInput lh-1 small" type="date" name="dateSearchFromForm" id="dateInput" required/>
+          <div class="p-1">
+            <input class="lh-1" type="hidden" value="<%=logs.path%>" name="currentPath" />
+            <button class="btn btn-sm btn-light lh-2">Submit</button>
+          </div>         
+        </form>         
+        
+         <div class="d-flex align-items-center mt-3 mb-3 ">          
+          <div class="d-flex justify-content-start">
+            <% if(logs.hasPrevPage && logs.page > 1) { %>
+            <a class="lh-2 btn btn-sm btn-light previous dark"href="<%= `${logs.path}&page=${logs.page-1}`%>"  id="previousRound">&#8249 Previous</a>  
+            <% } %> 
+          </div> 
+            <div class="flex-fill justify-content-center text-center small">
+              <%= `Currently showing ${logs.docs.length} results of ${logs.totalDocs}. ` %>
+              <% if(logs.totalPages > 1) { %> 
+              <%= `Page ${logs.page} of ${logs.totalPages}` %> 
+              <% } %> 
+            </div>       
+          <div class="d-flex justify-content-end">
+            <% if(logs.hasNextPage) { %>
+              <a class="btn btn-sm btn-light next dark" href="<%= `${logs.path}&page=${logs.page+1}`%>"  id="nextRound">Next &#8250</a> 
+            <% } %>              
+          </div>          
+        </div>  
+        
+        <div class="text-center align-items-center">        
+          <table class="col-12 table-responsive table-striped table-bordered align-middle rounded">
+            <tbody class="infinite-scroll">
+              <tr>
+                <th  scope="col">Switched</th>
+                <th scope="col">Date</th>
+                <th scope="col">Client IP</th>
+                <th scope="col">Client Agent</th>
+              </tr>
+                <% for (log of logs.docs) {%> <% log.localeTime = log.time.toLocaleString(); %>
+                  <tr class="registry">
+                    <td><%= log.switch %></td>
+                    <td><%= log.localeTime %></td>              
+                    <td><%= log.userIP %></td>
+                    <td><%= log.userAgent %></td>
+                  </tr>
+                <% } %>
+            </tbody>
+          </table>
+        </div>
+          <div class="row d-flex align-items-center justify-content-between mt-3 mb-3">          
+            <div class="col d-flex justify-content-start">
+              <% if(logs.hasPrevPage && logs.page > 1) { %>
+                <a class="btn btn-sm btn-light previous dark"href="<%= `${logs.path}&page=${logs.page-1}`%>"  id="previousRound">&#8249 Previous</a>  
+              <% } %> 
+            </div> 
+             <div class="col d-flex justify-content-center">
+              <a class=" btn btn-sm btn-light me-1" href="/">Home</a>
+              <a class=" btn btn-sm btn-light ms-1" href="/close">Close</a>
+            </div>       
+            <div class="col d-flex justify-content-end">
+              <% if(logs.hasNextPage) { %>
+                <a class="btn btn-sm btn-light next dark" href="<%= `${logs.path}&page=${logs.page+1}`%>"  id="nextRound">Next &#8250</a> 
+              <% } %>              
+            </div>          
+          </div>
+      </div>
+      <script>
+        const home = document.getElementById("logs");
+        home.classList.toggle("active");
+      </script>

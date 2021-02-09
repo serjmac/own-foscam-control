@@ -1,4 +1,9 @@
 node_modules
 _test
-snapshot.jpg
 .env
+utils_unused
+config.js
+ftp/snap/*.jpg
+ftp/record/*.mkv
+*.log
+logs

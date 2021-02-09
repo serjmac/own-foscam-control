@@ -1,0 +1,6 @@
+Foscam should record in this folder snapshots and video from motion detection trigger.
+Expected paths are: 
+
+\ftp\record\alarm_YYYYMMDD_hhmmss.mkv, for videos
+\ftp\snap\MDAlarm_YYYYMMDD_hhmmss.jpg for images
+

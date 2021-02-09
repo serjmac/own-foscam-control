@@ -1,14 +1,10 @@
-/* body {
-  background: rgb(117, 99, 179);
-  background: linear-gradient(45deg, rgba(117, 99, 179, 1) 0%, rgba(16, 16, 17, 1) 100%);
-} */
-/* body {
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
-} */
 body {
-  background: linear-gradient(-45deg, #5c5ee0, #1d1e47, #7b3ca0, #361947);
+  color: white;
+  background: #323233;
+}
+/* body {
+  color: white;
+  background: linear-gradient(-45deg, #323233, #000000, #474349, #000000);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
 }
@@ -23,38 +19,51 @@ body {
   100% {
     background-position: 0% 50%;
   }
+} */
+
+table {
+  margin: auto;
 }
 
-h1 {
-  color: rgb(218, 218, 218);
-  font-family: "Helvetica Neue", sans-serif;
-  font-size: 1.5rem;
+th,
+td {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  color: white;
+  font-size: 0.75rem;
+}
+
+.dateInput {
+  background-color: back;
+  line-height: 2rem;
+  border-radius: 10px;
+}
+
+.btn {
+  font-size: 1rem;
   font-weight: bold;
-  text-align: center;
-  max-width: 90vw;
+  color: #323233;
+  transition: 0.15s;
+}
+.btn-sm {
+  font-size: 0.7rem;
+  font-weight: bold;
+  transition: 0.15s;
 }
 
-h2 {
-  color: #f8f8ff;
-  font-family: "Open Sans", sans-serif;
-  font-size: 1.5rem;
-  font-weight: 500;
-  line-height: 20px;
-  margin: 6px auto;
-  line-height: 30px;
-  text-align: center;
+.btn:hover,
+.list-group-item:hover {
+  background: linear-gradient(to bottom, #dfdede 5%, #b9b9b9 100%);
+  background-color: #d8d2d2;
+  color: black;
 }
 
-.container {
-  text-align: center;
-  margin: auto;
-  border: solid 2px;
-  padding-bottom: 6px;
-}
-
-form {
-  display: inline-block;
-  margin: auto;
+.btn:active,
+.list-group-item:active {
+  position: relative;
+  top: 3px;
 }
 
 .onButton {
@@ -63,27 +72,21 @@ form {
   background-color: #b8e356;
   border-radius: 6px;
   border: 1px solid #83c41a;
-  display: inline-block;
   cursor: pointer;
   color: #ffffff;
   font-family: Arial;
-  font-size: 40px;
+  font-size: 1.5rem;
   font-weight: bold;
   padding: 6px 24px;
   text-decoration: none;
   text-shadow: 0px 1px 0px #86ae47;
-  width: 45vw;
-  height: 45vw;
-  max-width: 375px;
-  max-height: 375px;
 }
+
 .onButton:hover {
-  background: linear-gradient(to bottom, #a5cc52 5%, #b8e356 100%);
+  background: linear-gradient(to bottom, #87a742 5%, #92b442 100%);
   background-color: #a5cc52;
-}
-.onButton:active {
-  position: relative;
-  top: 1px;
+  color: white;
+  font-size: 2rem;
 }
 
 .offButton {
@@ -96,21 +99,80 @@ form {
   cursor: pointer;
   color: #ffffff;
   font-family: Arial;
-  font-size: 40px;
+  font-size: 1.5rem;
   font-weight: bold;
-  padding: 6px 24px;
   text-decoration: none;
   text-shadow: 0px 1px 0px #810e05;
-  width: 45vw;
-  height: 45vw;
-  max-width: 375px;
-  max-height: 375px;
 }
 .offButton:hover {
-  background: linear-gradient(to bottom, #c62d1f 5%, #f24537 100%);
+  background: linear-gradient(to bottom, #b42a1e 5%, #d63b30 100%);
   background-color: #c62d1f;
+  color: white;
+  font-size: 2rem;
 }
-.offButton:active {
-  position: relative;
-  top: 1px;
+
+.closeButton {
+  box-shadow: inset 0px 1px 0px 0px #ffffff;
+  background: linear-gradient(to bottom, #ffffff 5%, #b8b8b8 100%);
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #ffffff;
+  display: inline-block;
+  cursor: pointer;
+  color: #000000;
+  font-family: Arial;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #8d8d8d;
+  max-height: 10rem;
+  min-height: 10vh;
+}
+
+.closeButton:hover {
+  background: linear-gradient(to bottom, #e4e4e4 5%, #b9b9b9 100%);
+  background-color: #d8d2d2;
+  font-size: 2rem;
+}
+
+#switchButtons {
+  height: 35vw;
+  max-height: 20rem;
+}
+
+a.nav-link {
+  padding: 0.25rem 0;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+a.nav-link:hover {
+  color: rgba(255, 255, 255, 0.863);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+a.nav-link:active {
+  padding: 0.25rem 0;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 1);
+}
+.navbar-expand {
+  margin-right: 0px;
+}
+
+.previous,
+.next {
+  text-align: center;
+  min-width: 4rem;
+  white-space: nowrap;
+}
+
+#homeImg {
+  width: 100%;
+  margin: auto;
+}
+
+.flush {
+  margin-top: 10rem;
+  margin-bottom: 1rem;
 }

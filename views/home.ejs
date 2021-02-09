@@ -1,31 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Foscam control</title>
-    <link rel="stylesheet" href="/styles.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Foscam Control in Js</h1>
-      <div class="buttons">
-        <form action="/enable">
-          <button id="enableBtn" class="onButton">Enable</button>
-        </form>
-        <form action="/disable">
-          <button id="disableBtn" class="offButton">Disable</button>
-        </form>
-      </div>
+<% layout('layouts/boilerplate')%>
+<head>
+  <!-- <link rel="stylesheet" href="/styles.css" /> -->
+</head>
 
-      <%= userIP %> <%= userAgent %> <%= `STATUS: ${newImg.alarmStatus}` %> <%= `server Up Time: ${newImg.serverUpTime}` %> <% if (newImg.alarmStatus
-      === "0") {%>
-      <h2>La alarma está DESACTIVADA</h2>
-      <% }%> <% if (newImg.alarmStatus === "1") {%>
-      <h2>La alarma está ACTIVADA</h2>
-      <% }%> <% if(newImg.showImage===true){ %>
-      <div>Mostrando imagen:</div>
-      <img src="snapshot.jpg" style="width: 100%; margin: auto" alt="img could not be loaded" /> <% } %>
+<div class="col-lg-8 text-center mx-auto">
+  <div id="buttons" class="row justify-content-center border p-2 rounded">
+    <form id="switchButtons" action="" class="row justify-content-center mt-3 mb-2" method="GET">
+      <button type="submit" class="onButton btn btn-success btn-lg col me-1" formaction="/enable">Enable</button>
+      <button type="submit" class="offButton btn btn-danger btn-lg col ms-1" formaction="/disable">Disable</button>
+    </form>
+
+    <form id="closeButton" class="row justify-content-center mb-4" action="/close" method="GET">
+      <button class="closeButton btn btn-light btn-lg col">Close</button>
+    </form>
+  </div>
+  <div class="row border pt-3 rounded">
+    <div>
+      <% if (newImg.alarmStatus === "0") { %>
+      <h2>Alarm is <strong>Disabled</strong></h2>
+      <% } %> <% if (newImg.alarmStatus === "1") { %>
+      <h2>Alarm is <strong>Enabled</strong></h2>
+      <% }%>
     </div>
-  </body>
-</html>
+    <div>
+      <% if(newImg.showImage===true){ %>
+      <h6>Showing image:</h6>
+      <img class="mb-3" id="homeImg" src="data:image/jpeg;base64,<%= newImg.imageB64 %>" alt="img could not be loaded" /> <% } %>
+    </div>
+  </div>
+</div>
+<script>
+  const home = document.getElementById("home");
+  home.classList.toggle("active");
+  const homeImg = document.getElementById("homeImg");
+  homeImg.addEventListener("dblclick", function (e) {
+    window.open("data:image/jpeg;base64,<%= newImg.imageB64 %>", (target = "_blank"));
+  });
+</script>

@@ -1,14 +1,14 @@
 {
-  "name": "ownfoscam01",
-  "version": "1.0.0",
-  "description": "",
+  "name": "ownfoscam",
+  "version": "0.1.0",
+  "description": "A Foscam camera common usage tool with activity and snapshot/recording log",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/serjmac/ownfoscam01.git"
+    "url": "git+https://github.com/serjmac/ownfoscam.git"
   },
   "keywords": [
     "foscam"
@@ -16,16 +16,24 @@
   "author": "Sergio Macias",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/serjmac/ownfoscam01/issues"
+    "url": "https://github.com/serjmac/ownfoscam/issues"
   },
-  "homepage": "https://github.com/serjmac/ownfoscam01#readme",
+  "homepage": "https://github.com/serjmac/ownfoscam#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "chokidar": "^3.5.1",
     "dotenv": "^8.2.0",
     "ejs-mate": "^3.0.0",
     "express": "^4.17.1",
+    "express-state": "^2.0.0",
     "fs": "0.0.1-security",
+    "joi": "^17.3.0",
+    "moment": "^2.29.1",
+    "mongoose": "^5.11.13",
+    "mongoose-paginate-v2": "^1.3.14",
     "path": "^0.12.7",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "xml2js": "^0.4.23"
   }
 }
