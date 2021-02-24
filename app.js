@@ -85,7 +85,7 @@ app.get("/getpresetlist", catchAsync(switching.getPTZList));
 
 app.get("/gotopreset/:preset", catchAsync(switching.gotoPreset));
 
-app.get("/carousel", catchAsync(carousel.todaySnapshots));
+app.get("/carousel", catchAsync(carousel.searchSnapshots));
 
 app.post("/carouselSearch", validatePost, catchAsync(carousel.searchSnapshots));
 

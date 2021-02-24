@@ -1,7 +1,7 @@
 const Ftp = require("../models/ftp");
 
 const searchDBSnapshots = async (startSearchDate, endSearchDate) => {
-  const response = await Ftp.find({ fileTime: { $gte: startSearchDate, $lt: endSearchDate } });
+  const response = await Ftp.find({ fileTime: { $gte: startSearchDate, $lt: endSearchDate } }).sort({ fileTime: -1 });
   let files = { jpgs: [], mkvs: [] };
   response.forEach((e) => {
     if (e.path.includes("jpg")) {
@@ -12,17 +12,22 @@ const searchDBSnapshots = async (startSearchDate, endSearchDate) => {
   });
   return files;
 };
-//search latest 24 hours
-module.exports.todaySnapshots = async (req, res) => {
-  const now = new Date();
-  const results = await searchDBSnapshots(new Date(now.getTime() - 1000 * 60 * 60 * 24), now);
-  res.render("carousel", { results });
-};
 
-//search 24hrs, from 00:00:00 from given day to 00:00:00 from next day
 module.exports.searchSnapshots = async (req, res) => {
-  const customDate = new Date(req.body.dateSearchFromForm);
-  const results = await searchDBSnapshots(customDate, new Date(customDate.getTime() + 1000 * 60 * 60 * 24));
-  results.date = customDate.toDateString();
+  let startSearchDate;
+  let endSearchDate;
+  if (req.body.dateSearchFromForm) {
+    //will search full given day from post request date
+    startSearchDate = new Date(req.body.dateSearchFromForm); //custom search
+    endSearchDate = new Date(startSearchDate.getTime() + 1000 * 60 * 60 * 24);
+  } else {
+    //will search latest 24 hours
+    endSearchDate = new Date(); //now
+    startSearchDate = new Date(endSearchDate.getTime() - 1000 * 60 * 60 * 24);
+  }
+  const results = await searchDBSnapshots(startSearchDate, endSearchDate);
+  if (req.body.dateSearchFromForm) {
+    results.date = startSearchDate.toDateString();
+  }
   res.render("carousel", { results });
 };
