@@ -25,7 +25,8 @@ module.exports.validatePost = (req, res, next) => {
 
 module.exports.getLogParams = (query) => {
   const limit = 20;
-  const page = parseInt(query.page) || 1;
+  const page = parseInt(query.page - 1) || 0;
+  const offset = page * limit;
   let date;
   let condition = {}; //search conditions for pagination
   //path needs to be stored in order to track search query string when paginating
@@ -35,13 +36,10 @@ module.exports.getLogParams = (query) => {
     path = path + `date=${query.date}`;
     const startSearchDate = new Date(date);
     const endSearchDate = new Date(startSearchDate.getTime() + 1000 * 60 * 60 * 24);
-    condition.time = { $gte: startSearchDate, $lt: endSearchDate };
+    condition = `WHERE created_at >= "${startSearchDate.toISOString()}" AND created_at < "${endSearchDate.toISOString()}"`;
+  } else {
+    condition = "";
   }
-  if (query.ip) {
-    path = path + `&ip=${query.ip}`;
-    condition.userIP = query.ip;
-  }
-  const paginateOptions = { page: page, limit: limit, sort: { _id: -1 } };
-  const logParams = { path, condition, paginateOptions };
+  const logParams = { path, condition, page, limit, offset };
   return logParams;
 };

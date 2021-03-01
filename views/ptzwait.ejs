@@ -6,7 +6,7 @@
       <div class="alert alert-danger" role="alert">
         <h4 class="alert-heading">Please wait</h4>
         <p>The camera is now moving to <%= preset %> preset, you will be redirected in <span id="secs">5</span> seconds...</p>
-        <form action="/"><button class="btn btn-light">Go to Home Now</button></form>
+        <a role="button" class="btn btn-light" href="/">Go to Home Now</a>
         <script>
           const countdown = (text, delay) => {
             return new Promise((resolve, reject) => {
@@ -21,7 +21,6 @@
               await countdown(i, 1000);
               await console.log(i);
             }
-            console.log("fin");
             window.location = "/";
           }
           callCount();

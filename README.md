@@ -6,6 +6,13 @@
 
 A simple app to ease daily and common usage of your Foscam camera, with extra features.
 
+## MongoDB / mySQL for logging
+
+Two branches available. Frontend is 100% shared between mongoDB and mySQL branches.
+
+- MongoDB controllers from [Main](https://github.com/serjmac/own-foscam-control/tree/main) branch.
+- mySQL controllers from [mysql](https://github.com/serjmac/own-foscam-control/tree/mysql) branch. You are currently viewing this branch's readme.
+
 ![demo](./docs/demo2.gif)
 
 ## Why?
@@ -18,7 +25,7 @@ With this app, most common use is available in a frontend. Coded in Javascript a
 
 ## Additional features available:
 
-- Database (in a MongoDB local or cloud host) loging
+- Database (in a MongoDB/mySQL local or cloud host) loging
 - Auto generated carousel with snapshots and recordings from FTP monitorized folder.
 - Pan Tilt presets direct access for quick goTo reposition
 
@@ -39,14 +46,21 @@ The application needs some basic parameters to operate. Everything is setup in a
 - SNAP_USR=yourFoscamUser
 - SNAP_PWD=yourFoscamPassword
 - SNAP_IP=yourFoscamIP
-- DB_URL=yourMongoDBURL
-- SNAPSHOT_LIFE_CHECK=daysBeforeDiscardingFTPContent
+- DB_HOST=MySQLDatabaseHost.test.amazon.com
+- DB_PORT=3306
+- DB_USER=MySQLDatabaseUser
+- DB_PASSWORD=MySQLDatabasePassword
+- SNAPSHOT_LIFE_CHECK=30
 
 **More detail:**
 
-### DB_URL=mongodb://localhost:27017/foscam
+### DB_HOST=
 
-This parameter points mongoose module to the URL MongoDB. Tests have been made both with a localhost Mongo 4.4.3 Ubuntu x64 (in a Raspberry Pi3) and on a remote cloud MongoDB Atlas cluster.
+This is the host URL to the mySQL database. Tests have been done with a mySQL AWS db.t2.micro instance.
+
+### DB_PORT=
+
+This parameter is optional, if this key is not present in the **.env** file, the app will use the 3306 default port.
 
 ### SNAPSHOT_LIFE_CHECK=30
 
@@ -62,7 +76,7 @@ Once parameters are setup, choose the way to start the app:
 
 - forever start app.js (this option is preferred, so that the option to reflush database and restart app will be working from Carousel section with just a button click)
 
-The app will be available on //localhost:3000 by default.
+The app will be available on //localhost:3001 by default in this branch.
 
 ![home](./docs/home.jpg)
 
@@ -98,6 +112,7 @@ Devepment testing on windows and ubuntu systems, targeting a Foscam 9821 unit.
 
 ## Release history
 
+- 0.1.1 Minor changes in frontend, added mySQL port branch.
 - 0.1 First release
 
 ## Troubleshouting
@@ -110,6 +125,8 @@ App expects this structure to work with:
 - images at: /ftp/snap/MDAlarm_YYYYMMDD_hhmmss.jpg
 
 Currently the app parses every filename to extract timestamp from YYYYMMDD_hhmmss string. If your camera does not generate this kind of structure, open an issue showing your file structure and I might add alternative such as fs.stat() to take timestamp from attributes and simplify the process.
+
+In mySQL branch, the app looks for "foscam" database on start. If not found, it will try to create the database and the two tables needed to work (ftps and activations tables).
 
 ## License
 

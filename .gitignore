@@ -7,3 +7,4 @@ ftp/snap/*.jpg
 ftp/record/*.mkv
 *.log
 logs
+DB_files_unused

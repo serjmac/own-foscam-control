@@ -43,3 +43,11 @@ module.exports.deleteProps = function (obj, propsArr) {
   }
   return obj;
 };
+
+module.exports.getConnThreadId = async (pool) => {
+  await pool.getConnection().then((conn) => {
+    const threadId = "connection threadId " + conn.threadId;
+    console.log(threadId);
+    conn.release();
+  });
+};

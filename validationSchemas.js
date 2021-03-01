@@ -9,7 +9,7 @@ module.exports.getQuerySchema = Joi.object({
     version: ["ipv4"],
   }),
   date: Joi.string().isoDate(),
-  page: Joi.number().min(1).max(999),
+  page: Joi.number().min(0).max(999),
 });
 
 module.exports.postFormSchema = Joi.object({

@@ -1,37 +1,36 @@
 {
-  "name": "ownfoscam",
-  "version": "0.1.0",
-  "description": "A Foscam camera common usage tool with activity and snapshot/recording log",
-  "main": "index.js",
+  "name": "own-foscam-control-mysql",
+  "version": "0.1.1",
+  "description": "A Foscam camera common usage tool API + frontend, with activity and snapshot/recording log, this branch use mySQL branch for logging",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/serjmac/ownfoscam.git"
+    "url": "git+https://github.com/serjmac/own-foscam-control-mysql.git"
   },
   "keywords": [
     "foscam"
   ],
-  "author": "Sergio Macias",
-  "license": "ISC",
+  "author": "Sergio Macías",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/serjmac/ownfoscam/issues"
+    "url": "https://github.com/serjmac/own-foscam-control-mysql/issues"
   },
-  "homepage": "https://github.com/serjmac/ownfoscam#readme",
+  "homepage": "https://github.com/serjmac/own-foscam-control-mysql#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
     "chokidar": "^3.5.1",
     "dotenv": "^8.2.0",
     "ejs-mate": "^3.0.0",
     "express": "^4.17.1",
-    "express-state": "^2.0.0",
     "fs": "0.0.1-security",
-    "joi": "^17.3.0",
+    "joi": "^17.4.0",
     "moment": "^2.29.1",
-    "mongoose": "^5.11.13",
-    "mongoose-paginate-v2": "^1.3.14",
+    "mysql2": "^2.2.5",
     "path": "^0.12.7",
     "xml-js": "^1.6.11",
     "xml2js": "^0.4.23"

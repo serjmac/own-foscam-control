@@ -27,7 +27,7 @@
               <% } %> 
             </div>       
           <div class="d-flex justify-content-end">
-            <% if(logs.totalPages > logs.page) { %>
+            <% if(logs.totalPages > logs.page ) { %>
               <a class="btn btn-sm btn-light next dark" href="<%= `${logs.path}&page=${logs.page+1}`%>"  id="nextRound">Next &#8250</a> 
             <% } %>              
           </div>          
@@ -42,12 +42,12 @@
                 <th scope="col">Client IP</th>
                 <th scope="col">Client Agent</th>
               </tr>
-                <% for (log of logs.docs) {%> <% log.localeTime = log.time.toLocaleString(); %>
+                <% for (log of logs.docs) {%> <% log.localeTime = log.created_at.toLocaleString(); %>
                   <tr class="registry">
                     <td><%= log.switch %></td>
                     <td><%= log.localeTime %></td>              
-                    <td><%= log.userIP %></td>
-                    <td><%= log.userAgent %></td>
+                    <td><%= log.user_ip %></td>
+                    <td><%= log.user_agent %></td>
                   </tr>
                 <% } %>
             </tbody>

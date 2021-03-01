@@ -1,7 +1,5 @@
-const Activation = require("../models/activation");
 const snapshot = require("./snapshot");
 const utils = require("../utils/utils");
-const mongoosePaginate = require("mongoose-paginate-v2");
 const { getLogParams } = require("../middleware");
 var xml2js = require("xml2js");
 
@@ -17,14 +15,13 @@ module.exports.enableAlarm = async (req, res) => {
   let newImg = { showImage: true };
   await snapshot.setAlarm("1");
   newImg.alarmStatus = await snapshot.getStatus();
-  const foscamSwitch = {
-    switch: "ON",
-    time: new Date(),
-    userIP: res.locals.userIP,
-    userAgent: res.locals.userAgent,
-  };
-  const newSwitch = new Activation(foscamSwitch);
-  await newSwitch.save();
+  const foscamSwitch = ["ON", new Date(), res.locals.userIP, res.locals.userAgent];
+  const sql = "INSERT INTO activations (switch, created_at, user_ip, user_agent) VALUES (?, ?, ?, ?)";
+  try {
+    await req.app.locals.pool.query(sql, [...foscamSwitch]);
+  } catch (error) {
+    console.error(error);
+  }
   newImg.imageB64 = await snapshot.downloadImageToBuffer();
   res.render("home", { newImg });
 };
@@ -33,29 +30,39 @@ module.exports.disableAlarm = async (req, res) => {
   let newImg = { showImage: false };
   await snapshot.setAlarm("0");
   newImg.alarmStatus = await snapshot.getStatus();
-  const foscamSwitch = {
-    switch: "OFF",
-    time: new Date(),
-    userIP: res.locals.userIP,
-    userAgent: res.locals.userAgent,
-  };
-  const newSwitch = new Activation(foscamSwitch);
-  await newSwitch.save();
+  const foscamSwitch = ["OFF", new Date(), res.locals.userIP, res.locals.userAgent];
+  const sql = "INSERT INTO activations (switch, created_at, user_ip, user_agent) VALUES (?, ?, ?, ?)";
+  try {
+    await req.app.locals.pool.query(sql, [...foscamSwitch]);
+  } catch (error) {
+    console.error(error);
+  }
   res.render("home", { newImg });
 };
 
 module.exports.getLogs = async (req, res) => {
+  console.log("getlogs route hit");
   const paginateParams = getLogParams(req.query);
-  await Activation.paginate(paginateParams.condition, paginateParams.paginateOptions)
-    .then((logs) => {
+  let logs = {};
+  try {
+    let sql = `SELECT * FROM activations ${paginateParams.condition} ORDER BY created_at DESC LIMIT ${paginateParams.offset},${paginateParams.limit}`;
+    await req.app.locals.pool.query(sql).then((results) => {
+      logs.docs = results[0];
       logs.path = paginateParams.path;
+      logs.page = paginateParams.page + 1;
+      logs.limit = paginateParams.limit;
+    });
+    sql = `SELECT COUNT(*) AS totalDocs FROM activations ${paginateParams.condition}`;
+    await req.app.locals.pool.query(sql).then((results) => {
+      logs.totalDocs = results[0][0].totalDocs;
+      logs.totalPages = Math.ceil(logs.totalDocs / logs.limit);
       const uptime = process.uptime();
       logs.serverUpTime = utils.formatTime(uptime);
       res.render("logs", { logs });
-    })
-    .catch((err) => {
-      res.send(err);
     });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 function removeEmptyValues(val) {
