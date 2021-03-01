@@ -1,8 +1,8 @@
 {
-  "name": "ownfoscam",
-  "version": "0.1.0",
-  "description": "A Foscam camera common usage tool with activity and snapshot/recording log",
-  "main": "index.js",
+  "name": "own-foscam-control",
+  "version": "0.1.1",
+  "description": "A Foscam camera common usage tool API + frontend, with activity and snapshot/recording log, this branch use MongoDB for logging",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
@@ -14,7 +14,7 @@
     "foscam"
   ],
   "author": "Sergio Macias",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/serjmac/ownfoscam/issues"
   },

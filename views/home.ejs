@@ -1,18 +1,20 @@
 <% layout('layouts/boilerplate')%>
 <head>
-  <!-- <link rel="stylesheet" href="/styles.css" /> -->
+  <!-- styles are globally loaded from boilerplate layout -->
 </head>
 
 <div class="col-lg-8 text-center mx-auto">
-  <div id="buttons" class="row justify-content-center border p-2 rounded">
-    <form id="switchButtons" action="" class="row justify-content-center mt-3 mb-2" method="GET">
-      <button type="submit" class="onButton btn btn-success btn-lg col me-1" formaction="/enable">Enable</button>
-      <button type="submit" class="offButton btn btn-danger btn-lg col ms-1" formaction="/disable">Disable</button>
-    </form>
+  <div id="buttons" class="row justify-content-center border rounded align-content-center pe-2 ps-2">
+    <div class="col-sm-6">
+      <div id="switches" class="row justify-content-center align-content-center mt-2 mb-2">
+        <a role="button" href="/enable" class="onButton switch btn btn-success btn-lg col me-1">Enable</a>
+        <a role="button" href="/disable" class="offButton switch btn btn-danger btn-lg col ms-1">Disable</a>
+      </div>
 
-    <form id="closeButton" class="row justify-content-center mb-4" action="/close" method="GET">
-      <button class="closeButton btn btn-light btn-lg col">Close</button>
-    </form>
+      <div class="row justify-content-center align-content-center mt-2 mb-2">
+        <a role="button" href="/close" class="closeButton btn btn-light btn-lg col">Close</a>
+      </div>
+    </div>
   </div>
   <div class="row border pt-3 rounded">
     <div>
@@ -25,15 +27,17 @@
     <div>
       <% if(newImg.showImage===true){ %>
       <h6>Showing image:</h6>
-      <img class="mb-3" id="homeImg" src="data:image/jpeg;base64,<%= newImg.imageB64 %>" alt="img could not be loaded" /> <% } %>
+      <img class="mb-3 img-fluid" id="homeImg" src="data:image/jpeg;base64,<%= newImg.imageB64 %>" alt="img could not be loaded" /> <% } %>
     </div>
   </div>
 </div>
 <script>
   const home = document.getElementById("home");
   home.classList.toggle("active");
-  const homeImg = document.getElementById("homeImg");
-  homeImg.addEventListener("dblclick", function (e) {
-    window.open("data:image/jpeg;base64,<%= newImg.imageB64 %>", (target = "_blank"));
-  });
+  if (document.getElementById("homeImg")) {
+    const homeImg = document.getElementById("homeImg");
+    homeImg.addEventListener("dblclick", function (e) {
+      window.open("data:image/jpeg;base64,<%= newImg.imageB64 %>", (target = "_blank"));
+    });
+  }
 </script>

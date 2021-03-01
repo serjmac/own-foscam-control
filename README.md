@@ -6,6 +6,13 @@
 
 A simple app to ease daily and common usage of your Foscam camera, with extra features.
 
+## MongoDB / mySQL for logging
+
+Two branches available. Frontend is 100% shared between mongoDB and mySQL branches.
+
+- MongoDB controllers from [Main](https://github.com/serjmac/own-foscam-control/tree/main) branch. You are currently viewing this branch's readme.
+- mySQL controllers from [mysql](https://github.com/serjmac/own-foscam-control/tree/mysql) branch.
+
 ![demo](./docs/demo2.gif)
 
 ## Why?
@@ -98,6 +105,7 @@ Devepment testing on windows and ubuntu systems, targeting a Foscam 9821 unit.
 
 ## Release history
 
+- 0.1.1 Minor changes in frontend, added mySQL port branch.
 - 0.1 First release
 
 ## Troubleshouting
