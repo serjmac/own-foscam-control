@@ -92,7 +92,7 @@ app.get("/api/helloworld/delayed", validateGet, delayer, catchAsync(switching.ap
 app.get("/api/helloworld", validateGet, catchAsync(switching.apiHelloWorld));
 app.get("/api/enable", catchAsync(switching.apiEnableAlarm));
 app.get("/api/disable", catchAsync(switching.apiDisableAlarm));
-app.get("/api/getimg", delayer, catchAsync(switching.apiGetImg));
+app.get("/api/getimg", catchAsync(switching.apiGetImg));
 app.get("/api/checkstatus", catchAsync(switching.apiCheckStatus));
 
 app.get("/logs", validateGet, catchAsync(switching.getLogs));
