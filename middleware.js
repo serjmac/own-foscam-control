@@ -42,6 +42,10 @@ module.exports.getLogParams = (query) => {
     condition.userIP = query.ip;
   }
   const paginateOptions = { page: page, limit: limit, sort: { _id: -1 } };
-  const logParams = { path, condition, paginateOptions };
-  return logParams;
+  return {path, condition, paginateOptions};
+};
+
+// dummy delay middleware to test spinners in frontend
+module.exports.delayer = (req, res, next) => {
+  setTimeout(()=>{console.log('delay'); next()},3000);
 };

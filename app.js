@@ -16,13 +16,15 @@ if (process.env.NODE_ENV !== "production") {
 // ftp
 
 const express = require("express");
+const cors = require("cors");
+
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const path = require("path");
 
 const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync"); //async wraper
-const { validateGet, validatePost } = require("./middleware");
+const { validateGet, validatePost, delayer } = require("./middleware");
 const chokidar = require("chokidar");
 const switching = require("./controllers/switching");
 const fileWatcher = require("./controllers/fileWatcher");
@@ -59,6 +61,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, ftpPath)));
 
+// cors settings, needs cors available in node_modules
+// todo test frontend from different IP
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+  next();
+});
+
 //middleware to send userIP and userAgent to any view template
 app.use((req, res, next) => {
   res.locals.userIP = req.ip.replace("::ffff:", "");
@@ -75,10 +87,17 @@ app.post("/searchByDate", validatePost, async (req, res) => {
   res.redirect(`/logs?date=${req.body.dateSearchFromForm}`);
 });
 
+// todo refactor and group endpoints
+app.get("/api/helloworld/delayed", validateGet, delayer, catchAsync(switching.apiHelloWorld));
+app.get("/api/helloworld", validateGet, catchAsync(switching.apiHelloWorld));
+app.get("/api/enable", catchAsync(switching.apiEnableAlarm));
+app.get("/api/disable", catchAsync(switching.apiDisableAlarm));
+app.get("/api/getimg", delayer, catchAsync(switching.apiGetImg));
+app.get("/api/checkstatus", catchAsync(switching.apiCheckStatus));
+
 app.get("/logs", validateGet, catchAsync(switching.getLogs));
 
 app.get("/enable", catchAsync(switching.enableAlarm));
-
 app.get("/disable", catchAsync(switching.disableAlarm));
 
 app.get("/getpresetlist", catchAsync(switching.getPTZList));
@@ -95,6 +114,8 @@ app.get("/close", (req, res) => {
   console.log("close route hit");
   res.send("<script>window.close();</script>");
 });
+
+app.get("/api/logs", validateGet, catchAsync(switching.apiGetLogs));
 
 app.get("/", catchAsync(switching.checkStatus));
 
