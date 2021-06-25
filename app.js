@@ -96,6 +96,8 @@ app.get("/api/checkstatus", catchAsync(switching.apiCheckStatus));
 app.get("/api/getpresetlist", catchAsync(switching.apiGetPTZList));
 app.get("/api/gotopreset/:preset", catchAsync(switching.apiGotoPreset));
 app.get("/api/logs", validateGet, catchAsync(switching.apiGetLogs));
+app.get("/api/carousel", catchAsync(carousel.apiSearchSnapshots));
+app.post("/api/carouselSearch", validatePost, catchAsync(carousel.apiSearchSnapshots));
 
 // integrated ejs views engine routes
 app.post("/searchByDate", validatePost, async (req, res) => {
