@@ -47,5 +47,10 @@ module.exports.getLogParams = (query) => {
 
 // dummy delay middleware to test spinners in frontend
 module.exports.delayer = (req, res, next) => {
-  setTimeout(()=>{console.log('delay'); next()},3000);
+  const delay = 3000;
+  setTimeout(() => {
+    console.log(`this was a dummy delay of ${delay} ms.`);
+    next()
+  },
+      delay);
 };

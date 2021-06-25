@@ -77,45 +77,42 @@ app.use((req, res, next) => {
   res.locals.userAgent = req.get("user-agent");
   next();
 });
+// todo move file tracking modules to separate app
 //watcher module to track addition or deletion of motion detetection snapshots
 //if access to ftpPath is not reliable, watcher should be disabled
 const watcher = chokidar.watch(ftpPath, { ignored: /(^|[\/\\])\../, persistent: true, usePolling: true });
 watcher.on("add", catchAsync(fileWatcher.addSnapToDB)).on("unlink", catchAsync(fileWatcher.deleteSnapFromDB));
 
 //routes
-app.post("/searchByDate", validatePost, async (req, res) => {
-  res.redirect(`/logs?date=${req.body.dateSearchFromForm}`);
-});
-
 // todo refactor and group endpoints
+
+// api endpoints for separate frontend
 app.get("/api/helloworld/delayed", validateGet, delayer, catchAsync(switching.apiHelloWorld));
 app.get("/api/helloworld", validateGet, catchAsync(switching.apiHelloWorld));
 app.get("/api/enable", catchAsync(switching.apiEnableAlarm));
 app.get("/api/disable", catchAsync(switching.apiDisableAlarm));
 app.get("/api/getimg", catchAsync(switching.apiGetImg));
 app.get("/api/checkstatus", catchAsync(switching.apiCheckStatus));
+app.get("/api/getpresetlist", catchAsync(switching.apiGetPTZList));
+app.get("/api/gotopreset/:preset", catchAsync(switching.apiGotoPreset));
+app.get("/api/logs", validateGet, catchAsync(switching.apiGetLogs));
 
+// integrated ejs views engine routes
+app.post("/searchByDate", validatePost, async (req, res) => {
+  res.redirect(`/logs?date=${req.body.dateSearchFromForm}`);
+});
 app.get("/logs", validateGet, catchAsync(switching.getLogs));
-
 app.get("/enable", catchAsync(switching.enableAlarm));
 app.get("/disable", catchAsync(switching.disableAlarm));
-
 app.get("/getpresetlist", catchAsync(switching.getPTZList));
-
 app.get("/gotopreset/:preset", catchAsync(switching.gotoPreset));
-
 app.get("/carousel", catchAsync(carousel.searchSnapshots));
-
 app.post("/carouselSearch", validatePost, catchAsync(carousel.searchSnapshots));
-
 app.get("/flushDB", catchAsync(fileWatcher.flushResyncDB));
-
 app.get("/close", (req, res) => {
   console.log("close route hit");
   res.send("<script>window.close();</script>");
 });
-
-app.get("/api/logs", validateGet, catchAsync(switching.apiGetLogs));
 
 app.get("/", catchAsync(switching.checkStatus));
 

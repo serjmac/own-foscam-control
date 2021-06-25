@@ -5,6 +5,28 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 const { getLogParams } = require("../middleware");
 var xml2js = require("xml2js");
 
+// remove empty values from object helper
+function removeEmptyValues(val) {
+  if (Array.isArray(val)) {
+    return val.reduce((res, cur) => {
+      if (cur !== "") {
+        return [...res, removeEmptyValues(cur)];
+      }
+      return res;
+    }, []);
+  } else if (Object.prototype.toString.call(val) === "[object Object]") {
+    return Object.keys(val).reduce((res, key) => {
+      if (val[key] !== "") {
+        return Object.assign({}, res, { [key]: removeEmptyValues(val[key]) });
+      }
+      return res;
+    }, undefined);
+  }
+  return val;
+}
+
+// integrated view engine methods
+
 module.exports.checkStatus = async (req, res) => {
   let newImg = { showImage: true };
   newImg.alarmStatus = await snapshot.getStatus();
@@ -58,39 +80,6 @@ module.exports.getLogs = async (req, res) => {
     });
 };
 
-module.exports.apiGetLogs = async (req, res) => {
-  const paginateParams = getLogParams(req.query);
-  await Activation.paginate(paginateParams.condition, paginateParams.paginateOptions)
-    .then((logs) => {
-      logs.path = paginateParams.path;
-      const uptime = process.uptime();
-      logs.serverUpTime = utils.formatTime(uptime);
-      res.send({ logs });
-    })
-    .catch((err) => {
-      res.send(err);
-    });
-};
-
-function removeEmptyValues(val) {
-  if (Array.isArray(val)) {
-    return val.reduce((res, cur) => {
-      if (cur !== "") {
-        return [...res, removeEmptyValues(cur)];
-      }
-      return res;
-    }, []);
-  } else if (Object.prototype.toString.call(val) === "[object Object]") {
-    return Object.keys(val).reduce((res, key) => {
-      if (val[key] !== "") {
-        return Object.assign({}, res, { [key]: removeEmptyValues(val[key]) });
-      }
-      return res;
-    }, undefined);
-  }
-  return val;
-}
-
 module.exports.getPTZList = async (req, res) => {
   const response = await snapshot.getPTZPresetPointList();
   await xml2js
@@ -112,7 +101,9 @@ module.exports.gotoPreset = async (req, res) => {
   res.render("ptzwait", { preset });
 };
 
-// todo refactor and move out foscamSwitch log registry saves
+// API endpoints methods
+
+// todo refactor and move away foscamSwitch log registry saves
 module.exports.apiHelloWorld = async (req, res) => {
   res.send({ data: 'hello world!' });
 }
@@ -129,8 +120,6 @@ module.exports.apiEnableAlarm = async (req, res) => {
   const newSwitch = new Activation(foscamSwitch);
   await newSwitch.save();
   let response = {};
-  // newImg.imageB64 = await snapshot.downloadImageToBuffer();
-  // response.imageB64 = await snapshot.downloadImageToBuffer();
   response.cameraAction = 'Enable Alarm command sent';
   response.alarmStatus = await snapshot.getStatus() === "1" ? 'Enabled' : 'error enabling alarm !!';
   response.showImage = true;
@@ -149,7 +138,6 @@ module.exports.apiDisableAlarm = async (req, res) => {
   };
   const newSwitch = new Activation(foscamSwitch);
   await newSwitch.save();
-  //res.send({ newImg });
   let response = {};
   response.cameraAction = 'Disable Alarm command sent';
   response.alarmStatus = await snapshot.getStatus() === '0' ? 'Disabled' : 'error disabling alarm !!';
@@ -175,4 +163,40 @@ module.exports.apiGetImg = async (req, res) => {
   let newImg = { showImage: true };
   newImg.imageB64 = await snapshot.downloadImageToBuffer();
   res.status(200).send({ newImg });
+};
+
+module.exports.apiGetLogs = async (req, res) => {
+  const paginateParams = getLogParams(req.query);
+  await Activation.paginate(paginateParams.condition, paginateParams.paginateOptions)
+      .then((logs) => {
+        logs.path = paginateParams.path;
+        const uptime = process.uptime();
+        logs.serverUpTime = utils.formatTime(uptime);
+        res.send({ logs });
+      })
+      .catch((err) => {
+        res.send(err);
+      });
+};
+
+module.exports.apiGetPTZList = async (req, res) => {
+  const response = await snapshot.getPTZPresetPointList();
+  await xml2js
+      .parseStringPromise(response.data, { explicitArray: false })
+      .then(function (result) {
+        //delete empty presets
+        const PTZPresetsRemoveEmpty = utils.deleteProps(result.CGI_Result, ["cnt", "result"]);
+        const PTZPresets = removeEmptyValues(PTZPresetsRemoveEmpty);
+        res.status(200).send({ PTZPresets });
+      })
+      .catch(function (err) {
+        console.log("error parsing: ", err);
+      });
+};
+
+module.exports.apiGotoPreset = async (req, res) => {
+    const { preset } = req.params;
+  console.log('going to: ', preset);
+  await snapshot.ptzGotoPresetPoint(preset);
+  res.status(200).send({preset});
 };
