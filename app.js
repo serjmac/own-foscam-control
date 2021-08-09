@@ -89,7 +89,7 @@ app.use((req, res, next) => {
 const watcher = chokidar.watch(ftpPath, { ignored: /(^|[\/\\])\../, persistent: true, usePolling: true });
 watcher.on("add", catchAsync(fileWatcher.addSnapToDB)).on("unlink", catchAsync(fileWatcher.deleteSnapFromDB));
 
-//routes
+// routes
 // todo refactor and group endpoints
 
 // api endpoints for separate frontend
