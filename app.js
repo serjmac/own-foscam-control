@@ -1,19 +1,23 @@
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-//you need to create a file called ".env" in this app root folder and set valid credentials to access your Foscam Camera
-//.env content keys needed:
-//SNAP_US=yourFoscamRemoteUser
-//SNAP_PWD=yourFoscamRemotePassword
-//SNAP_IP=yourFoscamIP
-//DB_URL=MongoDB URL path; example in Atlas Cloud: mongodb+srv://usr:<password>@cluster0.xxxx.mongodb.net/<dbname>?retryWrites=true&w=majority, example locally: mongodb://localhost:27017/foscam
-//SNAPSHOT_LIFE_CHECK=integer, number of days before snapshots and recording are discarded and not stored into DB (files are kept in FTP folder)
+/**
+ * PLEASE NOTE !!
+ * you need to create a file called ".env" in this app root folder and set valid credentials to access your Foscam Camera
+ * .env content keys needed:
+ * SNAP_US=yourFoscamRemoteUser
+ * SNAP_PWD=yourFoscamRemotePassword
+ * SNAP_IP=yourFoscamIP
+ * DB_URL=MongoDB URL path, example in Atlas Cloud: mongodb+srv://usr:<password>@cluster0.xxxx.mongodb.net/<dbname>?retryWrites=true&w=majority, example locally: mongodb://localhost:27017/foscam
+ * SNAPSHOT_LIFE_CHECK=integer, number of days before snapshots and recording are discarded, not stored into DB and deleted from filesystem
+ * FTP_PATH=./ftp, path where 'snap' and 'record' folders are contained, can be local or mounted). Default is './ftp' in project folder
 
-//Ubuntu forever script launcher
-//su - ubuntu -c "NODE_ENV=development /usr/local/bin/forever start -w --watchDirectory=/home/ubuntu/ownfoscam --watchIgnore --sourceDir /home/ubuntu/ownfoscam --workingDir /home/ubuntu/ownfoscam -e /home/ubuntu/.forever/ownfoscam_error.log -l /home/ubuntu/.forever/ownfoscam.log --append app.js"
-//you should to place a .foreverignore file in the app folder with valid ignore pattern, to avoid unwanted app restarts on file changes on dynamic folders, for exmaple:
-// public
-// ftp
+ * Ubuntu forever script launcher
+ * su - ubuntu -c "NODE_ENV=development /usr/local/bin/forever start -w --watchDirectory=/home/ubuntu/ownfoscam --watchIgnore --sourceDir /home/ubuntu/ownfoscam --workingDir /home/ubuntu/ownfoscam -e /home/ubuntu/.forever/ownfoscam_error.log -l /home/ubuntu/.forever/ownfoscam.log --append app.js"
+ * you should to place a .foreverignore file in the app folder with valid ignore pattern, to avoid unwanted app restarts on file changes on dynamic folders, for example:
+ *  public
+ *  ftp
+ */
 
 const express = require("express");
 const cors = require("cors");
@@ -32,6 +36,8 @@ const carousel = require("./controllers/carousel");
 const port = 3000;
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/foscam";
 const ftpPath = process.env.FTP_PATH || "./ftp";
+const { deleteOldSnapshots } = require("./controllers/schedule");
+
 console.log(process.platform);
 
 mongoose.connect(dbUrl, {
