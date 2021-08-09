@@ -34,6 +34,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.11.13",
     "mongoose-paginate-v2": "^1.3.14",
+    "node-schedule": "^2.0.0",
     "path": "^0.12.7",
     "xml-js": "^1.6.11",
     "xml2js": "^0.4.23"
