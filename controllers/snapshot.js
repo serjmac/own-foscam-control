@@ -1,6 +1,4 @@
 "use strict";
-const Fs = require("fs");
-const path = require("path");
 const axios = require("axios");
 const convert = require("xml-js");
 const username = process.env.SNAP_USR;
@@ -18,7 +16,7 @@ module.exports.downloadImageToBuffer = async () => {
     .then((response) => Buffer.from(response.data, "binary").toString("base64"));
 };
 
-//alternative for downloading image to local disck
+//alternative for downloading image to local disc
 // module.exports.downloadImage = async () => {
 //   console.log("downloadImage function called");
 //   const url = `http://${IP}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=${username}&pwd=${password}`;
@@ -64,8 +62,7 @@ module.exports.setAlarm = async (statusBit) => {
 module.exports.getPTZPresetPointList = async () => {
   const URL = `http://${IP}:88/cgi-bin/CGIProxy.fcgi?cmd=getPTZPresetPointList&usr=${username}&pwd=${password}`;
   try {
-    const response = await axios.get(URL);
-    return response;
+    return await axios.get(URL);
   } catch (error) {
     console.error(error);
   }
@@ -74,8 +71,7 @@ module.exports.getPTZPresetPointList = async () => {
 module.exports.ptzGotoPresetPoint = async (preset) => {
   const URL = `http://${IP}:88/cgi-bin/CGIProxy.fcgi?cmd=ptzGotoPresetPoint&name=${preset}&usr=${username}&pwd=${password}`;
   try {
-    const response = await axios.get(URL);
-    return response;
+    return await axios.get(URL);
   } catch (error) {
     console.error(error);
   }
