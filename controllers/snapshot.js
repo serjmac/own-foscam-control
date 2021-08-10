@@ -7,7 +7,6 @@ const IP = process.env.SNAP_IP;
 
 //saving image to buffer without using local disk
 module.exports.downloadImageToBuffer = async () => {
-  console.log("downloadImage function called");
   const url = `http://${IP}:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=${username}&pwd=${password}`;
   return axios
     .get(url, {
@@ -43,7 +42,7 @@ module.exports.getStatus = async () => {
     const options = { ignoreComment: true, compact: false, alwaysChildren: true };
     const dataParsedToJs = convert.xml2js(xml, options);
     const isEnable = dataParsedToJs.elements[0].elements[1].elements[0].text;
-    console.log(`Camera isEnable?: ${isEnable}`);
+    console.log(`${new Date().toString()}Camera isEnable?: ${isEnable}`);
     return isEnable;
   } catch (error) {
     console.error(error);

@@ -3,7 +3,6 @@ const Ftp = require("../models/ftp");
 const path = require("path");
 const ftpPath = process.env.FTP_PATH || "./ftp";
 const fs = require("fs");
-const ftp = require("../models/ftp");
 const snapShotLifeCheck = process.env.SNAPSHOT_LIFE_CHECK || 30; //days
 
 const addToDb = async (query, update) => {
@@ -13,8 +12,8 @@ const addToDb = async (query, update) => {
 
 function checkModified(file) {
   const stats = fs.statSync(file);
-  console.log(`File Data Last Modified: ${stats.mtime}`);
-  console.log(new Date() - new Date(stats.mtime));
+  // console.log(`File Data Last Modified: ${stats.mtime}`);
+  // console.log(new Date() - new Date(stats.mtime));
   if (new Date() - new Date(stats.mtime) > snapShotLifeCheck * 86400000) {
     console.log(
       `${file} discarded because it is too dated (${parseInt(
