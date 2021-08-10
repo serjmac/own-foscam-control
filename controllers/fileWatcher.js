@@ -12,20 +12,18 @@ const addToDb = async (query, update) => {
 
 function checkModified(file) {
   const stats = fs.statSync(file);
-  // console.log(`File Data Last Modified: ${stats.mtime}`);
-  // console.log(new Date() - new Date(stats.mtime));
-  if (new Date() - new Date(stats.mtime) > snapShotLifeCheck * 86400000) {
+  const now = new Date();
+  const fileCreatedAt = stats.mtime;
+  console.log('now: ', now, ',  file stats.mtime: ', fileCreatedAt);
+  const diffTime =  now - fileCreatedAt;
+  if (diffTime > (snapShotLifeCheck * 86400000)) {
     console.log(
-      `${file} discarded because it is too dated (${parseInt(
-        (new Date() - new Date(stats.mtime)) / 86400000
-      )} days, limit is set to ${snapShotLifeCheck})`
+      `${file} discarded because it is too dated (${Math.round((diffTime / 86400000 + Number.EPSILON) * 100) / 100 } days, limit is set to ${snapShotLifeCheck})`
     );
     return "discarded";
   } else {
     console.log(
-      `${file} is to be stored in DB because it is considered recent (${parseInt(
-        (new Date() - new Date(stats.mtime)) / 86400000
-      )} days, limit is set to ${snapShotLifeCheck})`
+      `${file} is to be stored in DB because it is considered recent (${Math.round((diffTime / 86400000 + Number.EPSILON) * 100) / 100 } days, limit is set to ${snapShotLifeCheck})`
     );
     return "continue";
   }
