@@ -1,19 +1,13 @@
-const Ftp = require("../models/ftp");
+const { searchDBSnapshots } = require("./traits");
 
-const searchDBSnapshots = async (startSearchDate, endSearchDate) => {
-  const response = await Ftp.find({ fileTime: { $gte: startSearchDate, $lt: endSearchDate } }).sort({ fileTime: -1 });
-  let files = { jpgs: [], mkvs: [] };
-  response.forEach((e) => {
-    if (e.path.includes("jpg")) {
-      files.jpgs.push(e);
-    } else {
-      files.mkvs.push(e);
-    }
-  });
-  return files;
-};
-
-module.exports.searchSnapshots = async (req, res) => {
+/**
+ * Search results in database from a given period.
+ * If no period found request->body->dateSearchFromForm, will search latest 24 hours.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+module.exports.searchSnapshots = async (req,res) => {
   let startSearchDate;
   let endSearchDate;
   if (req.body.dateSearchFromForm) {
@@ -29,5 +23,9 @@ module.exports.searchSnapshots = async (req, res) => {
   if (req.body.dateSearchFromForm) {
     results.date = startSearchDate.toDateString();
   }
-  res.render("carousel", { results });
+  // if renderView = true, render view, else just return results data
+  res.locals.renderView ?
+      res.render("carousel", { results })
+      :
+      res.status(200).send({ results });
 };

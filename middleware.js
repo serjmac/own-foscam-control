@@ -42,6 +42,20 @@ module.exports.getLogParams = (query) => {
     condition.userIP = query.ip;
   }
   const paginateOptions = { page: page, limit: limit, sort: { _id: -1 } };
-  const logParams = { path, condition, paginateOptions };
-  return logParams;
+  return {path, condition, paginateOptions};
+};
+
+/**
+ * Dummy response delay inserter middleware, for example to test spinners in frontend
+ * @param req
+ * @param res
+ * @param next
+ */
+module.exports.delayer = (req, res, next) => {
+  const delay = 3000;
+  setTimeout(() => {
+    console.log(`this was a dummy delay of ${delay} ms.`);
+    next()
+  },
+      delay);
 };

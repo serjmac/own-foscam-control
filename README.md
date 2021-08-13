@@ -12,6 +12,7 @@ Two branches available. Frontend is 100% shared between mongoDB and mySQL branch
 
 - MongoDB controllers from [Main](https://github.com/serjmac/own-foscam-control/tree/main) branch. You are currently viewing this branch's readme.
 - mySQL controllers from [mysql](https://github.com/serjmac/own-foscam-control/tree/mysql) branch.
+- New 'api-separate-frontend' branch, this is the MongoDB branch with new development, in short future it will become the main branch. Features the implementation of API endpoints that allows the backend app operate with a separate frontend. It has also improved filewatching features.   
 
 ![demo](./docs/demo2.gif)
 
@@ -48,6 +49,7 @@ The application needs some basic parameters to operate. Everything is setup in a
 - SNAP_IP=yourFoscamIP
 - DB_URL=yourMongoDBURL
 - SNAPSHOT_LIFE_CHECK=daysBeforeDiscardingFTPContent
+- FTP_PATH=relativePathTpFtpFolder
 
 **More detail:**
 
@@ -59,15 +61,26 @@ This parameter points mongoose module to the URL MongoDB. Tests have been made b
 
 This parameter is the number of days from which FTP snapshots and recordings are discarded, so that their paths will not be stored in the database. Note that files are not deleted from FTP folder, they are just ignored because they are considered too aged.
 
+### FTP_PATH=./ftp
+
+The folder where Foscam camera is storing recordings and snapshots from motion detection triggers. Inside this ftp folder, it is expected to be the 'record' and 'snap' folder. This folders will be monitored by a filewatcher so that new generated files are automatically tagged as 'jpg' or 'mkv' and their paths are stored in the database, so that they will populated in the 'Carousel' section to easy access.
+
+By default, the Foscam camera generates a folder, where its name is a concatenation of CameraModel_MAC, example: 'FI9821W_C4123456789A', inside this folder the camera generates the mentioned 'record' and 'snap' folders, to store video .mkvs and image .jpgs, respectively.
+
+What I do when running this app in a linux environment, is create a symbolic link directory from app_folder/ftp/record -> FI9821W_C4123456789A/record and another as app_folder/ftp/snap -> -> FI9821W_C4123456789A/snap.
+
+That way, relative paths are easily standardised, stored in database (yes, only path is saved to database) and the app just use the database to have indexes of the media files.
+
+
 ## Operating
 
-Once parameters are setup, choose the way to start the app:
+Once parameters are setup in the '.env' file, choose the way to start the app:
 
 - node app.js
 
 - nodemon app.js
 
-- forever start app.js (this option is preferred, so that the option to reflush database and restart app will be working from Carousel section with just a button click)
+- forever start app.js (this option is then one which I prefer, so that the option to reflush database and restart app will be working from Carousel section with just a button click). In fact, I did setup a rc.local boot script that launches forever instance that monitor changes in app files, killing and relaunching it when I do some git pull to update the app.  
 
 The app will be available on //localhost:3000 by default.
 
