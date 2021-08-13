@@ -45,7 +45,12 @@ module.exports.getLogParams = (query) => {
   return {path, condition, paginateOptions};
 };
 
-// dummy delay middleware to test spinners in frontend
+/**
+ * Dummy response delay inserter middleware, for example to test spinners in frontend
+ * @param req
+ * @param res
+ * @param next
+ */
 module.exports.delayer = (req, res, next) => {
   const delay = 3000;
   setTimeout(() => {

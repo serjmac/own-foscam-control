@@ -21,11 +21,9 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require("express");
 const cors = require("cors");
-
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const path = require("path");
-
 const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync"); //async wraper
 const { validateGet, validatePost, delayer } = require("./middleware");
@@ -58,7 +56,7 @@ const app = express();
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 
-//only for REPL app execution
+// only for REPL app execution
 // const __dirname = path.resolve(path.dirname(""));
 //
 app.set("views", path.join(__dirname, "/views"));
@@ -67,8 +65,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, ftpPath)));
 
-// cors settings, needs cors available in node_modules
-// todo test frontend from different IP
+/**
+ * CORS settings, needs cors available in node_modules.
+ * Accept requests coming from different origin IP
+ */
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
@@ -77,35 +77,47 @@ app.use((req, res, next) => {
   next();
 });
 
-//middleware to send userIP and userAgent to any view template
+/**
+ * Global middleware variables
+ * userIP
+ * userAgent
+ * renderView, checking if url contains 'api', allowing methods to know whether to render view as response or just return data as response
+ */
 app.use((req, res, next) => {
   res.locals.userIP = req.ip.replace("::ffff:", "");
   res.locals.userAgent = req.get("user-agent");
+  res.locals.renderView = !req.url.includes('/api/');
   next();
 });
+
 // todo move file tracking modules to separate app
-//watcher module to track addition or deletion of motion detetection snapshots
-//if access to ftpPath is not reliable, watcher should be disabled
+/**
+ * file watcher module, to track addition or deletion of motion detection snapshots/videos
+ * if access to ftpPath is not reliable, watcher should be disabled
+ * @type {FSWatcher}
+ */
 const watcher = chokidar.watch(ftpPath, { ignored: /(^|[\/\\])\../, persistent: true, usePolling: true });
 watcher.on("add", catchAsync(fileWatcher.addSnapToDB)).on("unlink", catchAsync(fileWatcher.deleteSnapFromDB));
 
-// routes
 // todo refactor and group endpoints
-
-// api endpoints for separate frontend
+/**
+ * Routes for API endpoints
+ */
 app.get("/api/helloworld/delayed", validateGet, delayer, catchAsync(switching.apiHelloWorld));
 app.get("/api/helloworld", validateGet, catchAsync(switching.apiHelloWorld));
 app.get("/api/enable", catchAsync(switching.apiEnableAlarm));
 app.get("/api/disable", catchAsync(switching.apiDisableAlarm));
 app.get("/api/getimg", catchAsync(switching.apiGetImg));
 app.get("/api/checkstatus", catchAsync(switching.apiCheckStatus));
-app.get("/api/getpresetlist", catchAsync(switching.apiGetPTZList));
-app.get("/api/gotopreset/:preset", catchAsync(switching.apiGotoPreset));
-app.get("/api/logs", validateGet, catchAsync(switching.apiGetLogs));
-app.get("/api/carousel", catchAsync(carousel.apiSearchSnapshots));
-app.post("/api/carouselSearch", validatePost, catchAsync(carousel.apiSearchSnapshots));
+app.get("/api/getpresetlist", catchAsync(switching.getPTZList));
+app.get("/api/gotopreset/:preset", catchAsync(switching.gotoPreset));
+app.get("/api/logs", validateGet, catchAsync(switching.getLogs));
+app.get("/api/carousel", catchAsync(carousel.searchSnapshots));
+app.post("/api/carouselSearch", validatePost, catchAsync(carousel.searchSnapshots));
 
-// integrated ejs views engine routes
+/**
+ * Routes for integrated ejs engined rendered view endpoints
+ */
 app.post("/searchByDate", validatePost, async (req, res) => {
   res.redirect(`/logs?date=${req.body.dateSearchFromForm}`);
 });

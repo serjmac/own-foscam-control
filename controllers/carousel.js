@@ -1,7 +1,13 @@
 const { searchDBSnapshots } = require("./traits");
 
-const search = async (req,res) => {
-  console.log('search');
+/**
+ * Search results in database from a given period.
+ * If no period found request->body->dateSearchFromForm, will search latest 24 hours.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+module.exports.searchSnapshots = async (req,res) => {
   let startSearchDate;
   let endSearchDate;
   if (req.body.dateSearchFromForm) {
@@ -17,15 +23,9 @@ const search = async (req,res) => {
   if (req.body.dateSearchFromForm) {
     results.date = startSearchDate.toDateString();
   }
-  return results;
-};
-
-module.exports.searchSnapshots = async (req, res) => {
-  const results = await search(req,res);
-  res.render("carousel", { results });
-};
-
-module.exports.apiSearchSnapshots = async (req, res) => {
-  const results = await search(req,res);
-  res.status(200).send({ results });
+  // if renderView = true, render view, else just return results data
+  res.locals.renderView ?
+      res.render("carousel", { results })
+      :
+      res.status(200).send({ results });
 };

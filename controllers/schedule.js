@@ -3,7 +3,10 @@ const snapShotLifeCheck = process.env.SNAPSHOT_LIFE_CHECK || 30; //days
 const { searchDBSnapshots } = require("./traits");
 const { deleteFromFsAndDB } = require("./fileWatcher");
 
-// run everyday at midnight, search for old files
+/**
+ * Run everyday at midnight, search for old files
+ * @type {Job}
+ */
 module.exports.deleteOldSnapshots = schedule.scheduleJob('00 00 * * *', async () => {
     console.log(`deleting files older than ${snapShotLifeCheck} days snapshot and recording files from filesystem...`);
     const startSearchDate = new Date('1970-01-01');

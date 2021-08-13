@@ -10,6 +10,11 @@ const addToDb = async (query, update) => {
   return await Ftp.findOneAndUpdate(query, update, options);
 };
 
+/**
+ * Checks file modified attribute, then decide if it should be stored (continue) or deleted (discarded)
+ * @param file {string}, relative path to file
+ * @returns {string} discarded|continue
+ */
 function checkModified(file) {
   const stats = fs.statSync(file);
   const now = new Date();
@@ -29,6 +34,11 @@ function checkModified(file) {
   }
 }
 
+/**
+ * Delete file for given path from filesystem and from database
+ * @param path {string}
+ * @returns {Promise<void>}
+ */
 module.exports.deleteFromFsAndDB = async (path) => {
   console.log('deleteFromFsAndDB path', path);
   const FsPath = ftpPath + '/' + path;
@@ -41,6 +51,11 @@ module.exports.deleteFromFsAndDB = async (path) => {
   });
 }
 
+/**
+ * Save to database the file for given path, checking if is a image or a recording, and normalizing relative paths
+ * @param filePath {string}
+ * @returns {Promise<void>}
+ */
 module.exports.addSnapToDB = async (filePath) => {
   console.log(filePath, "added event");
   const checkAge = await checkModified(filePath);
@@ -74,21 +89,28 @@ module.exports.addSnapToDB = async (filePath) => {
   }
 };
 
+/**
+ * Delete a given path from database
+ * @param filePath
+ * @returns {Promise<void>}
+ */
 module.exports.deleteSnapFromDB = async (filePath) => {
-  console.log(filePath, "deleted event");
+  console.log(filePath, "deleted event...");
   const normalizedPath = filePath.split(path.sep).join(path.posix.sep).replace(/ftp\//, "");
-  if (normalizedPath.includes("jpg")) {
-    const query = { path: normalizedPath };
-    const response = await Ftp.findOneAndDelete(query);
-    console.log("Snapshot path deleted from Database:", response);
-  }
-  if (normalizedPath.includes("mkv")) {
-    const query = { path: normalizedPath };
-    const response = await Ftp.findOneAndDelete(query);
-    console.log("Record path deleted from Database:", response);
-  }
+  const query = { path: normalizedPath };
+  const response = await Ftp.findOneAndDelete(query);
+  normalizedPath.includes("jpg") ?
+      console.log("Snapshot path deleted from Database:", response.path)
+      :
+      console.log("Record path deleted from Database:", response.path);
 };
 
+/**
+ * Flush database and restart method (for linux platform running app with 'forever' process)
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 module.exports.flushResyncDB = async (req, res) => {
   console.log("flushDB route hit");
   const response = await Ftp.deleteMany({});
