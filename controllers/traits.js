@@ -7,8 +7,6 @@ const Ftp = require("../models/ftp");
  * @returns {Promise<{jpgs: *[], mkvs: *[]}>}
  */
 module.exports.searchDBSnapshots = async (startSearchDate, endSearchDate) => {
-    console.log('startSearchDate: ', startSearchDate);
-    console.log('typeof: ', typeof(startSearchDate));
     const response = await Ftp.find({ fileTime: { $gte: startSearchDate, $lt: endSearchDate } }).sort({ fileTime: -1 });
     let files = { jpgs: [], mkvs: [] };
     response.forEach((e) => {
