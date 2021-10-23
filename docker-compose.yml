@@ -3,11 +3,14 @@ services:
   node:
     restart: always
     build: .
+    depends_on:
+      - mongo
     ports:
       - 3000:3000
     volumes:
       - ./:/code
   mongo:
+    restart: always
     image: mongo:4.2
     ports:
       - 27017:27017
