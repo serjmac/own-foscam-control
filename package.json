@@ -4,7 +4,8 @@
   "description": "A Foscam camera common usage tool API + frontend, with activity and snapshot/recording log, this branch use MongoDB for logging",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "start.dev": "nodemon -L"
   },
   "repository": {
     "type": "git",
@@ -38,5 +39,8 @@
     "path": "^0.12.7",
     "xml-js": "^1.6.11",
     "xml2js": "^0.4.23"
+  },
+    "devDependencies": {
+    "nodemon": "^2.0.14"
   }
 }
