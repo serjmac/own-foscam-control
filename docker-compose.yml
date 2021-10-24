@@ -1,14 +1,16 @@
-version: '3'
+version: '3.8'
 services:
   node:
     restart: always
-    build: .
+    build: 
+        context: .   
     depends_on:
       - mongo
     ports:
       - 3000:3000
     volumes:
-      - ./:/code
+      - .:/app/
+      - /app/node_modules
   mongo:
     restart: always
     image: mongo:4.2
