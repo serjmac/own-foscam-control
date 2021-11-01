@@ -33,7 +33,7 @@ const fileWatcher = require("./controllers/fileWatcher");
 const carousel = require("./controllers/carousel");
 const port = 3000;
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/foscam";
-const ftpPath = process.env.FTP_PATH || "./ftp";
+const ftpPath = process.env.FTP_PATH;
 const { deleteOldSnapshots } = require("./controllers/schedule");
 
 console.log(process.platform);
@@ -49,6 +49,15 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
   console.log(" database connected OK");
+  // initialize file watcherss
+  // todo move file tracking modules to separate app
+  /**
+   * file watcher module, to track addition or deletion of motion detection snapshots/videos
+   * if access to ftpPath is not reliable, watcher should be disabled
+   * @type {FSWatcher}
+   */
+  const watcher = chokidar.watch(ftpPath, { ignored: /(^|[\/\\])\../, persistent: true, usePolling: true });
+  watcher.on("add", catchAsync(fileWatcher.addSnapToDB)).on("unlink", catchAsync(fileWatcher.deleteSnapFromDB));
 });
 
 const app = express();
@@ -70,10 +79,13 @@ app.use(express.static(path.join(__dirname, ftpPath)));
  * Accept requests coming from different origin IP
  */
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
   next();
 });
 
@@ -86,18 +98,9 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.locals.userIP = req.ip.replace("::ffff:", "");
   res.locals.userAgent = req.get("user-agent");
-  res.locals.renderView = !req.url.includes('/api/');
+  res.locals.renderView = !req.url.includes("/api/");
   next();
 });
-
-// todo move file tracking modules to separate app
-/**
- * file watcher module, to track addition or deletion of motion detection snapshots/videos
- * if access to ftpPath is not reliable, watcher should be disabled
- * @type {FSWatcher}
- */
-const watcher = chokidar.watch(ftpPath, { ignored: /(^|[\/\\])\../, persistent: true, usePolling: true });
-watcher.on("add", catchAsync(fileWatcher.addSnapToDB)).on("unlink", catchAsync(fileWatcher.deleteSnapFromDB));
 
 // todo refactor and group endpoints
 /**

@@ -3,8 +3,7 @@ _test
 .env
 utils_unused
 config.js
-ftp/snap/*.jpg
-ftp/record/*.mkv
 *.log
 logs
 /.idea
+data

@@ -1,11 +1,12 @@
-version: '3.8'
+version: "3.8"
 services:
   node:
     restart: always
-    build: 
-        context: .   
+    build:
+      context: .
     depends_on:
       - mongo
+      - ftpd_server
     ports:
       - 3000:3000
     volumes:
@@ -18,5 +19,29 @@ services:
       - 27017:27017
     volumes:
       - mongodb:/data/db
+      # - ./data/db_data:/data/db #expose mongo DB folder in hosts project folder ./data/db_data
+  ftpd_server:
+    image: stilliard/pure-ftpd
+    container_name: pure-ftpd
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    volumes: # remember to replace /folder_on_disk/ with the path to where you want to store the files on the host machine
+      - ./data/ftp_data:/home/username
+      # - "/folder_on_disk/passwd:/etc/pure-ftpd/passwd"
+    # uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
+    #      - "/folder_on_disk/ssl:/etc/ssl/private/"
+    # or ssl/tls with Let's Encrypt (cert and key as two files)
+    #      - "/etc/letsencrypt/live/<your_server>/cert.pem:/etc/ssl/private/pure-ftpd-cert.pem"
+    #      - "/etc/letsencrypt/live/<your_server>/privkey.pem:/etc/ssl/private/pure-ftpd-key.pem"
+    environment:
+      PUBLICHOST: "${LOCALHOST}" # set the host IP in the .env file key LOCALHOST, need to expose FTP service and be accessible from Foscam camera FTP service
+      FTP_USER_NAME: "foscam"
+      FTP_USER_PASS: "foscamfoscampass!"
+      FTP_USER_HOME: "/home/username"
+      # SNAP_FTP_FOLDER: FI9821W_C4D65537C47D
+    # also for ssl/tls:
+    #      ADDED_FLAGS: "--tls=2"
+    restart: always
 volumes:
- mongodb:
+  mongodb:
