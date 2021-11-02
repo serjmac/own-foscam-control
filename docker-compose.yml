@@ -39,7 +39,6 @@ services:
       FTP_USER_NAME: "foscam"
       FTP_USER_PASS: "foscamfoscampass!"
       FTP_USER_HOME: "/home/username"
-      # SNAP_FTP_FOLDER: FI9821W_C4D65537C47D
     # also for ssl/tls:
     #      ADDED_FLAGS: "--tls=2"
     restart: always
