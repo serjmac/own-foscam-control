@@ -10,7 +10,8 @@ if (process.env.NODE_ENV !== "production") {
  * SNAP_IP=yourFoscamIP
  * DB_URL=MongoDB URL path, example in Atlas Cloud: mongodb+srv://usr:<password>@cluster0.xxxx.mongodb.net/<dbname>?retryWrites=true&w=majority, example locally: mongodb://localhost:27017/foscam
  * SNAPSHOT_LIFE_CHECK=integer, number of days before snapshots and recording are discarded, not stored into DB and deleted from filesystem
- * FTP_PATH=./ftp, path where 'snap' and 'record' folders are contained, can be local or mounted). Default is './ftp' in project folder
+ * FTP_PATH=./ftp, path where 'snap' and 'record' folders are contained, can be local or mounted). Default is './data/ftp_data' in project folder
+ * LOCALHOST=localhostIP, optional, if you user docker_compose file to start the app, the ftp container needs the host IP to route the FTP client access
 
  * Ubuntu forever script launcher
  * su - ubuntu -c "NODE_ENV=development /usr/local/bin/forever start -w --watchDirectory=/home/ubuntu/ownfoscam --watchIgnore --sourceDir /home/ubuntu/ownfoscam --workingDir /home/ubuntu/ownfoscam -e /home/ubuntu/.forever/ownfoscam_error.log -l /home/ubuntu/.forever/ownfoscam.log --append app.js"
@@ -71,8 +72,19 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 
 app.use(express.urlencoded({ extended: true }));
+// assets serve
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, ftpPath)));
+
+// FTP path serve, if path contains ":", will serve absolute path, else will serve relative to app folder
+// absolute paths ie network mapped drive Z:/ for FTP folder
+// relative path ie local at appFolder/data/ftp_data for FTP folder
+if (ftpPath.includes(":")) {
+  console.log("serving absolute path: ", ftpPath);
+  app.use(express.static(path.join(ftpPath)));
+} else {
+  console.log("serving relative path: ", ftpPath);
+  app.use(express.static(path.join(__dirname, ftpPath)));
+}
 
 /**
  * CORS settings, needs cors available in node_modules.
@@ -117,7 +129,6 @@ app.get("/api/gotopreset/:preset", catchAsync(switching.gotoPreset));
 app.get("/api/logs", validateGet, catchAsync(switching.getLogs));
 app.get("/api/carousel", catchAsync(carousel.searchSnapshots));
 app.post("/api/carouselSearch", validatePost, catchAsync(carousel.searchSnapshots));
-
 /**
  * Routes for integrated ejs engined rendered view endpoints
  */
