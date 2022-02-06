@@ -127,6 +127,7 @@ module.exports.gotoPreset = async (req, res) => {
 };
 
 // todo refactor and move away foscamSwitch log registry saves
+// todo move strings to constants
 
 module.exports.apiEnableAlarm = async (req, res) => {
   // let newImg = { showImage: true };
@@ -141,8 +142,14 @@ module.exports.apiEnableAlarm = async (req, res) => {
   await newSwitch.save();
   let response = {};
   response.cameraAction = 'Enable Alarm command sent';
-  response.alarmStatus = await snapshot.getStatus() === "1" ? 'Enabled' : 'error enabling alarm !!';
-  response.showImage = true;
+  response.alarmStatus = await snapshot.getStatus() === "1" ? 'Enabled' : 'Error enabling alarm, problem connecting with camera !!';
+  if (response.alarmStatus !== 'Enabled') {
+    response.showImage = false;
+    response.error = true;
+  } else {
+    response.showImage = true;
+    response.error = false;
+  }
   console.log(response);
   res.status(200).send({ response });
 };
@@ -160,7 +167,7 @@ module.exports.apiDisableAlarm = async (req, res) => {
   await newSwitch.save();
   let response = {};
   response.cameraAction = 'Disable Alarm command sent';
-  response.alarmStatus = await snapshot.getStatus() === '0' ? 'Disabled' : 'error disabling alarm !!';
+  response.alarmStatus = await snapshot.getStatus() === '0' ? 'Disabled' : 'Error disabling alarm, problem connecting with camera !!';
   response.showImage = false;
   res.status(200).send({ response });
 };
@@ -170,12 +177,17 @@ module.exports.apiCheckStatus = async (req, res) => {
   const alarmStatus = await snapshot.getStatus();
   if ( alarmStatus === '1') {
     response.alarmStatus = 'Enabled';
+    response.error = false;
+    response.showImage = true;
   } else if ( alarmStatus === '0') {
     response.alarmStatus = 'Disabled';
+    response.error = false;
+    response.showImage = true;
   } else {
-    response.alarmStatus = 'error getting camera status !!';
+    response.alarmStatus = 'Backend error connecting with camera!!';
+    response.error = true;
+    response.showImage = false;
   }
-  response.showImage = true;
   res.status(200).send({ response });
 };
 

@@ -1,5 +1,6 @@
 const { getQuerySchema, postFormSchema } = require("./validationSchemas");
 const ExpressError = require("./utils/ExpressError");
+const fakeDelay = 500;
 
 module.exports.validateGet = (req, res, next) => {
   // const { error } = ipSchema.validate(req.query.ip);
@@ -42,7 +43,7 @@ module.exports.getLogParams = (query) => {
     condition.userIP = query.ip;
   }
   const paginateOptions = { page: page, limit: limit, sort: { _id: -1 } };
-  return {path, condition, paginateOptions};
+  return { path, condition, paginateOptions };
 };
 
 /**
@@ -52,10 +53,9 @@ module.exports.getLogParams = (query) => {
  * @param next
  */
 module.exports.delayer = (req, res, next) => {
-  const delay = 3000;
+  const delay = fakeDelay;
   setTimeout(() => {
-    console.log(`this was a dummy delay of ${delay} ms.`);
-    next()
-  },
-      delay);
+    console.log(`this request had a dummy delay of ${delay} ms.`);
+    next();
+  }, delay);
 };

@@ -1,4 +1,5 @@
 const { searchDBSnapshots } = require("./traits");
+const latest24hStr = "latest 24 hours";
 
 /**
  * Search results in database from a given period.
@@ -7,7 +8,7 @@ const { searchDBSnapshots } = require("./traits");
  * @param res
  * @returns {Promise<void>}
  */
-module.exports.searchSnapshots = async (req,res) => {
+module.exports.searchSnapshots = async (req, res) => {
   let startSearchDate;
   let endSearchDate;
   if (req.body.dateSearchFromForm) {
@@ -20,12 +21,7 @@ module.exports.searchSnapshots = async (req,res) => {
     startSearchDate = new Date(endSearchDate.getTime() - 1000 * 60 * 60 * 24);
   }
   const results = await searchDBSnapshots(startSearchDate, endSearchDate);
-  if (req.body.dateSearchFromForm) {
-    results.date = startSearchDate.toDateString();
-  }
+  results.date = req.body.dateSearchFromForm ? req.body.dateSearchFromForm : latest24hStr;
   // if renderView = true, render view, else just return results data
-  res.locals.renderView ?
-      res.render("carousel", { results })
-      :
-      res.status(200).send({ results });
+  res.locals.renderView ? res.render("carousel", { results }) : res.status(200).send({ results });
 };
