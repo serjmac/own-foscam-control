@@ -150,7 +150,6 @@ module.exports.apiEnableAlarm = async (req, res) => {
     response.showImage = true;
     response.error = false;
   }
-  console.log(response);
   res.status(200).send({ response });
 };
 

@@ -30,12 +30,12 @@ const catchAsync = require("./utils/catchAsync"); //async wraper
 const { validateGet, validatePost, delayer } = require("./middleware");
 const chokidar = require("chokidar");
 const switching = require("./controllers/switching");
-const fileWatcher = require("./controllers/fileWatcher");
+const fileWatcher = require("./services/fileWatcher");
 const carousel = require("./controllers/carousel");
 const port = 3000;
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/foscam";
 const ftpPath = process.env.FTP_PATH;
-const { deleteOldSnapshots } = require("./controllers/schedule");
+const { deleteOldSnapshots } = require("./services/schedule");
 
 console.log(process.platform);
 

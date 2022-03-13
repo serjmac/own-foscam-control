@@ -1,6 +1,6 @@
 const schedule = require("node-schedule");
 const snapShotLifeCheck = process.env.SNAPSHOT_LIFE_CHECK || 30; //days
-const { searchDBSnapshots } = require("./traits");
+const { searchDBSnapshots } = require("../controllers/traits");
 const { deleteFromFsAndDB } = require("./fileWatcher");
 
 /**
