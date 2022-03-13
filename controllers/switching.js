@@ -15,30 +15,6 @@ module.exports.apiHelloWorld = async (req, res) => {
   res.status(200).send({ data: 'hello world!' });
 }
 
-/**
- * Remove empty values from object helper
- * @param val
- * @returns {string|*}
- */
-function removeEmptyValues(val) {
-  if (Array.isArray(val)) {
-    return val.reduce((res, cur) => {
-      if (cur !== "") {
-        return [...res, removeEmptyValues(cur)];
-      }
-      return res;
-    }, []);
-  } else if (Object.prototype.toString.call(val) === "[object Object]") {
-    return Object.keys(val).reduce((res, key) => {
-      if (val[key] !== "") {
-        return Object.assign({}, res, { [key]: removeEmptyValues(val[key]) });
-      }
-      return res;
-    }, undefined);
-  }
-  return val;
-}
-
 module.exports.checkStatus = async (req, res) => {
   let newImg = { showImage: true };
   newImg.alarmStatus = await snapshot.getStatus();
@@ -102,9 +78,13 @@ module.exports.getPTZList = async (req, res) => {
   await xml2js
       .parseStringPromise(response.data, { explicitArray: false })
       .then(function (result) {
-        //delete empty presets
-        const PTZPresetsRemoveEmpty = utils.deleteProps(result.CGI_Result, ["cnt", "result"]);
-        const PTZPresets = removeEmptyValues(PTZPresetsRemoveEmpty);
+        //delete empty and unwanted properties
+        let PTZPresets = {};
+        Object.keys(result.CGI_Result).forEach(key => {
+          if (result.CGI_Result[key] && key.includes('point')) {
+            PTZPresets[key] = result.CGI_Result[key];
+          }
+        })
         // if renderView = true, render view, else just return PTZPresets data
         res.locals.renderView ?
         res.render("settings", { PTZPresets })
